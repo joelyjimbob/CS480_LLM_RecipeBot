@@ -9,7 +9,9 @@ export default function Home() {
   const [foodInput, setFoodInput] = useState("");
   const [numPeopleInput, setNumInput] = useState("");
   const [whitelistInput, setWhitelist] = useState("");
+  const [nutritionInput, setNutrition] = useState("");
   const [result, setResult] = useState();
+  
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -18,7 +20,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput }),
+      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput }),
     });
     const data = await response.json();
     setResult(data.result);
@@ -32,7 +34,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <img src="/Poetry-bot.png" className={styles.icon} />
+        <img src="/bot.png" className={styles.icon} />
         <h3>Cook a dish.</h3>
         <form>
           <input
@@ -67,12 +69,22 @@ export default function Home() {
         <form>
           <input
             type="text"
-            name="prompt"
-            placeholder="Enter a word or two"
+            name="blacklist"
+            placeholder="Enter ingredients to avoid"
             value={blacklistInput}
             onChange={(e) => setBlacklist(e.target.value)}
           />
           <input type="hidden" value = {blacklistInput} onChange={(e) => setBlacklist(e.target.value)}/>
+        </form>
+        <form>
+          <fieldset>
+
+           <div>
+             <input type="checkbox" id="nutrition" name="interest" value="nutrition" />
+             <label for="nutrition">Show Nutrition Information</label>
+            </div>
+          </fieldset>
+          <input type="hidden" onChange={(e) => setNutrition()}/>
         </form>
         <form onSubmit={onSubmit}>
           <input type="submit" value="Generate Recipe" />
