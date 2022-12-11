@@ -1,17 +1,28 @@
+import Document from "next/document";
 import { Configuration, OpenAIApi } from "openai";
-
+import { createElement } from 'react';
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+var image_url = new String;
 
 export default async function (req, res) {
   const completion = await openai.createCompletion({
-    model: "text-davinci-002",
+    model: "text-davinci-003",
     prompt: generatePrompt(req.body.food, req.body.numPeople, req.body.whitelist, req.body.blacklist, req.body.nutrition),
     temperature: 0.6,
     max_tokens: 365,
   });
+
+  const response = await openai.createImage({
+    prompt: req.body.food,
+    n: 1,
+    size: "1024x1024",
+  });
+  image_url = response.data.data[0].url;
+  console.log(image_url) // logs generated image url
+  
   res.status(200).json({ result: completion.data.choices[0].text.replace(/\\n/g, '<br/>') });
 }
 

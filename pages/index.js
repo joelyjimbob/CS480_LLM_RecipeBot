@@ -11,7 +11,6 @@ export default function Home() {
   const [whitelistInput, setWhitelist] = useState("");
   const [nutritionInput, setNutrition] = useState("");
   const [result, setResult] = useState();
-  
 
   async function onSubmit(event) {
     event.preventDefault();
