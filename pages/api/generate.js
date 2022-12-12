@@ -10,7 +10,7 @@ var image_url = new String;
 export default async function (req, res) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: generatePrompt(req.body.food, req.body.numPeople, req.body.whitelist, req.body.blacklist, req.body.nutrition),
+    prompt: generatePrompt(req.body.food, req.body.numPeople, req.body.whitelist, req.body.blacklist, req.body.nutrition, req.body.price),
     temperature: 0.6,
     max_tokens: 365,
   });
@@ -26,7 +26,7 @@ export default async function (req, res) {
   res.status(200).json({ result: completion.data.choices[0].text.replace(/\\n/g, '<br/>') });
 }
 
-function generatePrompt(food, numPeople, whitelist, blacklist, nutrition) {
+function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price) {
 
   if(food == ""){
     return " Repeat this sentence once: There is no food to generate.";
@@ -51,6 +51,12 @@ function generatePrompt(food, numPeople, whitelist, blacklist, nutrition) {
   
     console.log("generated a prompt");
 
+  // Checks if there is a specified price point
+  if (price != ''){
+    prompt += '\nMust cost ' + price + ' dollars. Include cost.';
+  }
+  
+    console.log("generated a prompt");
   if (nutrition == null){
     console.log("nutrition is null");
     return prompt;

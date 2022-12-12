@@ -7,6 +7,7 @@ export default function Home() {
 
   const [blacklistInput, setBlacklist] = useState("");
   const [foodInput, setFoodInput] = useState("");
+  const [priceInput, setPriceInput] = useState("");
   const [numPeopleInput, setNumInput] = useState("");
   const [whitelistInput, setWhitelist] = useState("");
   const [nutritionInput, setNutrition] = useState("");
@@ -19,7 +20,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput }),
+      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput, price: priceInput }),
     });
     const data = await response.json();
     setResult(data.result);
@@ -74,6 +75,16 @@ export default function Home() {
             onChange={(e) => setBlacklist(e.target.value)}
           />
           <input type="hidden" value = {blacklistInput} onChange={(e) => setBlacklist(e.target.value)}/>
+        </form>
+        <form>
+          <input
+            type="text"
+            name="price"
+            placeholder="How much money do you want to spend?"
+            value={priceInput}
+            onChange={(e) => setPriceInput(e.target.value)}
+          />
+          <input type="hidden" value = {priceInput} onChange={(e) => setPriceInput(e.target.value)}/>
         </form>
         <form>
           <fieldset>
