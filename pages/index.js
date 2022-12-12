@@ -10,11 +10,14 @@ export default function Home() {
   const [priceInput, setPriceInput] = useState("");
   const [numPeopleInput, setNumInput] = useState("");
   const [whitelistInput, setWhitelist] = useState("");
+  const [allergyInput, setAllergyInput] = useState("");
+  const [tasteInput, setTasteInput] = useState("");
+  const [themeInput, setThemeInput] = useState("");
   const [nutritionInput, setNutrition] = useState();
   const [img_url, setImage] = useState();
   const [result, setResult] = useState();
 
-  var image_url = "/Covered_Dish.jpg";
+
   var url = img_url;
   const alt = "/Covered_Dish.jpg";
   var src = url!=null ? url : alt;
@@ -27,7 +30,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput, price: priceInput }),
+      body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput, price: priceInput, allergies: allergyInput, taste: tasteInput, theme: themeInput }),
     });
     const data = await response.json();
     cookbot = "/Robot_Serve.jpg";
@@ -36,13 +39,17 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div style={{ 
+      backgroundImage: 'url("Background.jpg")',
+      backgroundSize: 'contain'
+    }}>
+      
       <Head>
         <title>Recipe-Bot</title>
         <link rel="icon" href="/chef.jpg" />
       </Head>
 
-      <main className={styles.main}>
+      <main className={styles.main} >
         <img src={cookbot} className={styles.icon} />
         <h3>Cook a dish.</h3>
         <form>
@@ -89,18 +96,48 @@ export default function Home() {
           <input
             type="text"
             name="price"
-            placeholder="How much money do you want to spend?"
+            placeholder="What is your max budget?"
             value={priceInput}
             onChange={(e) => setPriceInput(e.target.value)}
           />
           <input type="hidden" value = {priceInput} onChange={(e) => setPriceInput(e.target.value)}/>
         </form>
         <form>
+          <input
+            type="text"
+            name="allergies"
+            placeholder="Any allergies?"
+            value={allergyInput}
+            onChange={(e) => setAllergyInput(e.target.value)}
+          />
+          <input type="hidden" value = {allergyInput} onChange={(e) => setAllergyInput(e.target.value)}/>
+        </form>
+        <form>
+          <input
+            type="text"
+            name="taste"
+            placeholder="A particular taste?(Sweet, Savory, etc)"
+            value={tasteInput}
+            onChange={(e) => setTasteInput(e.target.value)}
+          />
+          <input type="hidden" value = {tasteInput} onChange={(e) => setTasteInput(e.target.value)}/>
+        </form>
+        <form>
+          <input
+            type="text"
+            name="theme"
+            placeholder="Any special theme or occasion?"
+            value={themeInput}
+            onChange={(e) => setThemeInput(e.target.value)}
+          />
+          <input type="hidden" value = {themeInput} onChange={(e) => setThemeInput(e.target.value)}/>
+        </form>
+        <form>
           <fieldset>
 
            <div>
              <input type="checkbox" id="nutrition" name="nutrition" unchecked onChange={(e) => setNutrition(e.target.checked)}/>
-             <label for="nutrition">Show Nutrition Information</label>
+             <label for="nutrition" style={{ color: 'white'}}>Show Nutrition Information</label>
             </div>
           </fieldset>
 
@@ -108,8 +145,9 @@ export default function Home() {
         <form onSubmit={onSubmit}>
           <input type="submit" value="Generate Recipe" />
         </form>
-        <img src={src}/>
-        <p className={styles.result}>{result}</p>
+        <img src={src} id = 'foodPic'/>
+        <label for="foodPic" style={{ color: 'white'}}>(Picture may not match recipie)</label>
+        <p className={styles.result} style={{ color: 'white'}}>{result}</p>
       </main>
     </div>
   );

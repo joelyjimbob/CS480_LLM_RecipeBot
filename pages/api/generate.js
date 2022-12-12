@@ -10,21 +10,21 @@ var image_url = new String;
 export default async function (req, res) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: generatePrompt(req.body.food, req.body.numPeople, req.body.whitelist, req.body.blacklist, req.body.nutrition, req.body.price),
+    prompt: generatePrompt(req.body.food, req.body.numPeople, req.body.whitelist, req.body.blacklist, req.body.nutrition, req.body.price, req.body.allergies, req.body.taste, req.body.theme),
     temperature: 0.6,
     max_tokens: 365,
   });
 
+
   const response = await openai.createImage({
-    prompt: req.body.food,
+    prompt: req.body.food=="" ? "A clean, empty plate" :  req.body.taste + "" + req.body.food,
     n: 1,
     size: "1024x1024",
   });
-  image_url = response.data.data[0].url;
   res.status(200).json({ result: completion.data.choices[0].text.replace(/\\n/g, '<br/>'), image_url: response.data.data[0].url });
 }
 
-function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price) {
+function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price, allergies, taste, theme) {
 
   if(food == ""){
     return " Repeat this sentence once: There is no food to generate.";
@@ -47,22 +47,33 @@ function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price)
     prompt += '\nMust not have ' + blacklist + ' as ingredients.';
   }
   
-    console.log("generated a prompt");
 
   // Checks if there is a specified price point
   if (price != ''){
     prompt += '\nMust cost ' + price + ' dollars or less. Include cost with ingredients.';
   }
 
-  console.log(nutrition);
+  // Checks if there is specified allergies
+  if (allergies != ''){
+    prompt += '\nMust avoid all ingredients that would harm someone with ' + allergies + 'allergies';
+  }
 
-  if (!nutrition){
-    console.log("No nutrition requested");
-    return prompt;
+  // Checks if there is a specified taste
+  if (taste != ''){
+    prompt += '\n Must have a ' + taste + 'type of flavor';
   }
-  else{
-    console.log("nutrition is found");
-    return prompt + "\n also include serving size and nutrition information per serving.";
+
+  // Checks if there is a specified theme
+  if (theme != ''){
+    prompt += '\nTheme the recipie around ' + theme + ' while including the flavor in the title.';
   }
+
+  if (nutrition){
+    prompt += "\n also include serving size and nutrition information per serving."
+  }
+
+  console.log("generated a prompt");
+
+  return prompt
 
 }
