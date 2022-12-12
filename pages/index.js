@@ -10,8 +10,15 @@ export default function Home() {
   const [priceInput, setPriceInput] = useState("");
   const [numPeopleInput, setNumInput] = useState("");
   const [whitelistInput, setWhitelist] = useState("");
-  const [nutritionInput, setNutrition] = useState("");
+  const [nutritionInput, setNutrition] = useState();
+  const [img_url, setImage] = useState();
   const [result, setResult] = useState();
+
+  var image_url = "/Covered_Dish.jpg";
+  var url = img_url;
+  const alt = "/Covered_Dish.jpg";
+  var src = url!=null ? url : alt;
+  var cookbot = url!=null ? "/Robot_Serve.jpg" :"/robot_cooking.jpg";
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -23,6 +30,8 @@ export default function Home() {
       body: JSON.stringify({ food: foodInput, numPeople: numPeopleInput, whitelist: whitelistInput, blacklist: blacklistInput, nutrition: nutritionInput, price: priceInput }),
     });
     const data = await response.json();
+    cookbot = "/Robot_Serve.jpg";
+    setImage(data.image_url);
     setResult(data.result);
   }
 
@@ -30,11 +39,11 @@ export default function Home() {
     <div>
       <Head>
         <title>Recipe-Bot</title>
-        <link rel="icon" href="/dog.png" />
+        <link rel="icon" href="/chef.jpg" />
       </Head>
 
       <main className={styles.main}>
-        <img src="/bot.png" className={styles.icon} />
+        <img src={cookbot} className={styles.icon} />
         <h3>Cook a dish.</h3>
         <form>
           <input
@@ -90,15 +99,16 @@ export default function Home() {
           <fieldset>
 
            <div>
-             <input type="checkbox" id="nutrition" name="interest" value="nutrition" />
+             <input type="checkbox" id="nutrition" name="nutrition" unchecked onChange={(e) => setNutrition(e.target.checked)}/>
              <label for="nutrition">Show Nutrition Information</label>
             </div>
           </fieldset>
-          <input type="hidden" onChange={(e) => setNutrition()}/>
+
         </form>
         <form onSubmit={onSubmit}>
           <input type="submit" value="Generate Recipe" />
         </form>
+        <img src={src}/>
         <p className={styles.result}>{result}</p>
       </main>
     </div>

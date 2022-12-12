@@ -21,9 +21,7 @@ export default async function (req, res) {
     size: "1024x1024",
   });
   image_url = response.data.data[0].url;
-  console.log(image_url) // logs generated image url
-  
-  res.status(200).json({ result: completion.data.choices[0].text.replace(/\\n/g, '<br/>') });
+  res.status(200).json({ result: completion.data.choices[0].text.replace(/\\n/g, '<br/>'), image_url: response.data.data[0].url });
 }
 
 function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price) {
@@ -53,12 +51,13 @@ function generatePrompt(food, numPeople, whitelist, blacklist, nutrition, price)
 
   // Checks if there is a specified price point
   if (price != ''){
-    prompt += '\nMust cost ' + price + ' dollars. Include cost.';
+    prompt += '\nMust cost ' + price + ' dollars or less. Include cost with ingredients.';
   }
-  
-    console.log("generated a prompt");
-  if (nutrition == null){
-    console.log("nutrition is null");
+
+  console.log(nutrition);
+
+  if (!nutrition){
+    console.log("No nutrition requested");
     return prompt;
   }
   else{
